@@ -45,7 +45,7 @@ services:
       - backend
     # Maps port 5432 (localhost) to port 5432 on the container. You can change the ports to fix your needs.
     ports:
-      - "5433:5432"
+      - "5439:5432"
     # Setup the username, password, and database name. You can changes these values.
     environment:
       - "POSTGRES_USER=postgres"

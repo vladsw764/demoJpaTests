@@ -28,4 +28,7 @@ public class Address {
 
     @Column(name = "street")
     private String street;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    private Employee employee;
 }

@@ -16,6 +16,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -30,10 +31,21 @@ public class EmployeeServiceBean implements EmployeeService {
 
 
     @Override
+    @Transactional
+    @ActivateCustomAnnotations({Name.class, ToLowerCase.class})
+    // @Transactional(propagation = Propagation.MANDATORY)
+    public Integer createReturnId(Employee employee) {
+        return employeeRepository.saveEmployee(
+                employee.getName(), employee.getEmail(), employee.getCountry(), String.valueOf(employee.getGender())
+        );
+    }
+
+    @Override
     @ActivateCustomAnnotations({Name.class, ToLowerCase.class})
     // @Transactional(propagation = Propagation.MANDATORY)
     public Employee create(Employee employee) {
         return employeeRepository.save(employee);
+
     }
 
     @Override
@@ -73,6 +85,16 @@ public class EmployeeServiceBean implements EmployeeService {
     }
 
     @Override
+    public Integer updateEmployeeById(Integer id, Employee employee) {
+        return employeeRepository.updateEmployee(
+                employee.getName(),
+                employee.getEmail(),
+                employee.getCountry(),
+                id
+        );
+    }
+
+    @Override
     public void removeById(Integer id) {
         //repository.deleteById(id);
         var employee = employeeRepository.findById(id)
@@ -82,6 +104,14 @@ public class EmployeeServiceBean implements EmployeeService {
         employeeRepository.delete(employee);
         //repository.save(employee);
     }
+
+    @Override
+    @Transactional
+    public void removeByIdNew(Integer id) {
+        employeeRepository.deleteAddressById(id);
+        employeeRepository.deleteEmployeeById(id);
+    }
+
 
     @Override
     public void removeAll() {

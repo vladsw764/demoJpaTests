@@ -51,6 +51,34 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
     @Transactional
     void updateEmployeeByName(String name, Integer id);
 
+    @Transactional
+    @Modifying(flushAutomatically = true, clearAutomatically = true)
+    @Query(value = """
+            INSERT INTO users(name, email, country, gender) VALUES (name, email, country, gender);
+            """, nativeQuery = true)
+    Integer saveEmployee(String name, String email, String country, String gender);
+
+    @Transactional
+    @Modifying(flushAutomatically = true, clearAutomatically = true)
+    @Query(value = """
+            DELETE FROM users WHERE id = ?1
+            """, nativeQuery = true)
+    void deleteEmployeeById(Integer id);
+
+    @Transactional
+    @Modifying(flushAutomatically = true, clearAutomatically = true)
+    @Query(value = """
+            DELETE FROM addresses WHERE employee_id = :employeeId
+            """, nativeQuery = true)
+    void deleteAddressById(@Param("employeeId") Integer id);
+
+    @Transactional
+    @Modifying(flushAutomatically = true, clearAutomatically = true)
+    @Query(value = """
+            UPDATE users SET name = ?1, email = ?2, country = ?3 WHERE id = ?4
+            """, nativeQuery = true)
+    Integer updateEmployee(String name, String email, String country, Integer id);
+
     @NotNull
     Page<Employee> findAll(Pageable pageable);
 

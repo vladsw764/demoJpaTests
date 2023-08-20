@@ -3,6 +3,7 @@ package com.example.demowithtests.util.mappers;
 import com.example.demowithtests.domain.Employee;
 import com.example.demowithtests.dto.EmployeeDto;
 import com.example.demowithtests.dto.EmployeeReadDto;
+import com.example.demowithtests.dto.EmployeeRequestDto;
 import org.mapstruct.Mapper;
 
 import java.util.List;
@@ -17,4 +18,6 @@ public interface EmployeeMapper {
     List<EmployeeDto> toListEmployeeDto(List<Employee> employees);
 
     Employee toEmployee(EmployeeDto employeeDto);
+
+    Employee toEmployee(EmployeeRequestDto employeeRequestDto);
 }

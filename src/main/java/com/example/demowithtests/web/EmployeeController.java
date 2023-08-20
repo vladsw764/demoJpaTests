@@ -3,6 +3,7 @@ package com.example.demowithtests.web;
 import com.example.demowithtests.domain.Employee;
 import com.example.demowithtests.dto.EmployeeDto;
 import com.example.demowithtests.dto.EmployeeReadDto;
+import com.example.demowithtests.dto.EmployeeRequestDto;
 import com.example.demowithtests.service.EmployeeService;
 import com.example.demowithtests.service.EmployeeServiceEM;
 import com.example.demowithtests.util.mappers.EmployeeMapper;
@@ -51,6 +52,20 @@ public class EmployeeController {
         return dto;
     }
 
+    @PostMapping("/users-new")
+    @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "This is endpoint to add a new employee.", description = "Create request to add a new employee.", tags = {"Employee"})
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "CREATED. The new employee is successfully created and added to database."),
+            @ApiResponse(responseCode = "400", description = "Invalid input"),
+            @ApiResponse(responseCode = "404", description = "NOT FOUND. Specified employee request not found."),
+            @ApiResponse(responseCode = "409", description = "Employee already exists")})
+    public Integer saveEmployeeNew(@RequestBody @Valid EmployeeDto request) {
+        log.debug("saveEmployee() - start: requestForSave = {}", request.name());
+        var employee = employeeMapper.toEmployee(request);
+        return employeeService.createReturnId(employee);
+    }
+
     @PostMapping("/users/jpa")
     @ResponseStatus(HttpStatus.CREATED)
     public Employee saveEmployee(@RequestBody Employee employee) {
@@ -97,7 +112,7 @@ public class EmployeeController {
 
     @PutMapping("/users/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public EmployeeReadDto refreshEmployee(@PathVariable("id") Integer id, @RequestBody EmployeeDto employee) {
+    public EmployeeReadDto refreshEmployeeNew(@PathVariable("id") Integer id, @RequestBody EmployeeDto employee) {
         log.debug("refreshEmployee() EmployeeController - start: id = {}", id);
         Employee entity = employeeMapper.toEmployee(employee);
         EmployeeReadDto dto = employeeMapper.toEmployeeReadDto(employeeService.updateById(id, entity));
@@ -105,10 +120,24 @@ public class EmployeeController {
         return dto;
     }
 
+    @PutMapping("/users-new/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public Integer refreshEmployee(@PathVariable("id") Integer id, @RequestBody EmployeeRequestDto employee) {
+        log.debug("refreshEmployee() EmployeeController - start: id = {}", id);
+        Employee entity = employeeMapper.toEmployee(employee);
+        return employeeService.updateEmployeeById(id, entity);
+    }
+
     @DeleteMapping("/users/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void removeEmployeeById(@PathVariable Integer id) {
         employeeService.removeById(id);
+    }
+
+    @DeleteMapping("/users-new/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void removeById(@PathVariable(name = "id") Integer id) {
+        employeeService.removeByIdNew(id);
     }
 
     @DeleteMapping("/users")

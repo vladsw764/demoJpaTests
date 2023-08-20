@@ -3,6 +3,7 @@ package com.example.demowithtests.service;
 import com.example.demowithtests.domain.Employee;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,6 +13,8 @@ public interface EmployeeService {
 
     Employee create(Employee employee);
 
+    Integer createReturnId(Employee employee);
+
     List<Employee> getAll();
 
     Page<Employee> getAllWithPagination(Pageable pageable);
@@ -20,7 +23,11 @@ public interface EmployeeService {
 
     Employee updateById(Integer id, Employee plane);
 
+    Integer updateEmployeeById(Integer id, Employee employee);
+
     void removeById(Integer id);
+
+    void removeByIdNew(Integer id);
 
     void removeAll();
 
