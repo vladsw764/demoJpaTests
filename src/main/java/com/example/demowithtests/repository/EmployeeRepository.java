@@ -25,6 +25,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
     @EntityGraph(type = EntityGraph.EntityGraphType.FETCH, attributePaths = "addresses")
     List<Employee> findByNameContaining(String name);
 
+
     @Query(value = "SELECT u.* FROM users u JOIN addresses a ON u.id = a.employee_id " +
             "WHERE u.gender = :gender AND a.country = :country", nativeQuery = true)
     /*@Query(value = "" +
@@ -44,6 +45,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
 
     Employee findByName(String name);
 
+    @EntityGraph(attributePaths = {"addresses", "document"})
     Employee findEmployeeByEmailNotNull();
 
     @Query("update Employee set name = ?1 where id = ?2")
@@ -79,15 +81,19 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
             """, nativeQuery = true)
     Integer updateEmployee(String name, String email, String country, Integer id);
 
-    @NotNull
-    Page<Employee> findAll(Pageable pageable);
+    @EntityGraph(attributePaths = {"addresses", "document"})
+    @Query("SELECT e FROM Employee e limit 500")
+    List<Employee> findFirst500();
+
 
     @EntityGraph(attributePaths = {"addresses", "document"})
     Page<Employee> findByName(String name, Pageable pageable);
 
+    @EntityGraph(attributePaths = {"addresses", "document"})
     Page<Employee> findByCountryContaining(String country, Pageable pageable);
 
-    @Query(value = "SELECT * FROM users WHERE country = 'Ukraine'", nativeQuery = true)
+    @EntityGraph(attributePaths = {"addresses", "document"})
+    @Query(value = "SELECT e FROM Employee e WHERE e.country = 'Ukraine'")
     Optional<List<Employee>> findAllUkrainian();
 
 }
