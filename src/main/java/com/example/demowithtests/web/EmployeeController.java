@@ -75,10 +75,10 @@ public class EmployeeController {
         return saved;
     }
 
-    @GetMapping("/users")
+    @GetMapping("/users/name/{name}")
     @ResponseStatus(HttpStatus.OK)
-    public List<Employee> getAllUsers() {
-        return employeeService.getAll();
+    public List<Employee> getAllUsers(@PathVariable String name) {
+        return employeeService.getAll(name);
     }
 
     @GetMapping("/users/pages")

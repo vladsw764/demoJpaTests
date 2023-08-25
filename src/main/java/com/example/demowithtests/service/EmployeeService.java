@@ -15,7 +15,7 @@ public interface EmployeeService {
 
     Integer createReturnId(Employee employee);
 
-    List<Employee> getAll();
+    List<Employee> getAll(String name);
 
     Page<Employee> getAllWithPagination(Pageable pageable);
 

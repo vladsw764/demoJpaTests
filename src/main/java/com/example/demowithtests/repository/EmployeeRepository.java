@@ -82,8 +82,8 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
     Integer updateEmployee(String name, String email, String country, Integer id);
 
     @EntityGraph(attributePaths = {"addresses", "document"})
-    @Query("SELECT e FROM Employee e limit 500")
-    List<Employee> findFirst500();
+    @Query("SELECT e FROM Employee e where e.name = ?1")
+    List<Employee> findAllByName(String name);
 
 
     @EntityGraph(attributePaths = {"addresses", "document"})
